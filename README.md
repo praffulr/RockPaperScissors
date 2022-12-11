@@ -5,6 +5,7 @@ The score is updated and shown at the end of each game, until the session ends.
 Before ending the game session, the summary of the session is shown.
 
 Instructions to run the game:
+
 => If it's a windows machine, the included rps.exe file can be run directly to begin the game session. Alternatively, 'open command prompt -> type rps.exe -> press     enter' to play the game.
 => In a linux machine, Enter the RockPaperScissors folder and 'Open a new terminal -> run ./compile.sh -> A new file called rps is generated in the folder -> type ./rps and press enter' to play the game.
 
