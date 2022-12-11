@@ -11,13 +11,17 @@ Instructions to run the game:
 => In a linux machine, Enter the RockPaperScissors folder and 'Open a new terminal -> run ./compile.sh -> A new file called rps is generated in the folder -> type ./rps and press enter' to play the game.
 
 User Choice:
+
 The user chooses his choice by typing an appropriate number in the terminal. 
 
 Computer Choice:
+
 Computer randomly chooses an option using a pseudorandom generator (implemented using standard cpp libraries).
 
 Scoring:
+
 Scoring rules of the game are based on the following:
+
   1. Rock smashes Scissors.
   2. Scissors cut Paper.
   3. Paper covers Rock.
@@ -25,13 +29,17 @@ Scoring rules of the game are based on the following:
  Winner gets a +1 in each round. Noone gets a point when it's a tie.
   
 Session Result:
+
 At the end of the session, total number of rounds played and the total round summary is displayed. It includes the user's final score, computer's final score and the number of games tied.
 
 Testing Details:
+
 Tested for high-number of cases and validated the results. Tested for all the borderline input conditions and handled them
 
 Further Improvements:
+
 -> Can implement a game engine which also stores the details of players, so that one's stats like win percentage, total games played, high score can be maintained.
+
 -> A leaderboard can be possibly maintained based on the above stats.
 
 
