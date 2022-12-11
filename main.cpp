@@ -9,29 +9,31 @@ long USER_SCORE = 0; //Score of User
 long COMP_SCORE = 0; //Score of Computer
 
 string playerName;
-// enum RPS_Choice {ROCK, PAPER, SCISSORS};
 
 int getUserChoice() {
+    string userInput;
     int userChoice;
     cout << "Please type-in your choice: Rock[1], Paper[2], Scissors[3] - ";
-    cin >> userChoice;
+    cin >> userInput;
     cout << endl;
-    while (userChoice != 1 && userChoice != 2 && userChoice != 3) {
-        cout << "Input not in the correct range - [1,3]" << endl << "Please give a valid choice - ";
-        cin >> userChoice;
+
+    while (userInput.length() != 1 || (userInput[0]-'1') < 0 || (userInput[0]-'1') > 2) {
+        cout << "Input not in the correct format. Please select an integral value from range - [1,3]" << endl;
+        cout << "Please type-in your choice: Rock[1], Paper[2], Scissors[3] - ";
+        cin >> userInput;
         cout << endl;
     }
-    return --userChoice;
+    userChoice = userInput[0]-'1';
+    return userChoice;
 }
 
 int getCompChoice() {
-    cout << "Debug Line: " << RAND_MAX << " " << rand() << endl;
-    int compChoice = rand()%3;
+
+    int compChoice = rand()%3; //Selecting a random value and the mod3 operation returns a value in correct range
     return compChoice;
 }
 
-void showResult(int userChoice, int compChoice) {
-
+int showResult(int userChoice, int compChoice) { //return value of 1 implies error in result execution
     if (userChoice == 0) { //User Choice - Rock
         if (compChoice == 0) { //Computer Choice - Rock
             cout << "You chose Rock(1), Computer chose Rock(1)" << endl;
@@ -48,7 +50,8 @@ void showResult(int userChoice, int compChoice) {
             USER_SCORE++;
         }
         else {
-            cout << "Computer Choice Error. Please force exit using Ctrl/Cmd+C, and restart the game" << endl;
+            cerr << "Computer Choice Error. Please force exit using Ctrl/Cmd+C, and restart the game" << endl;
+            return 1;
         }
     }
     else if (userChoice == 1) { // User Choice - Paper
@@ -67,7 +70,8 @@ void showResult(int userChoice, int compChoice) {
             COMP_SCORE++;
         }
         else {
-            cout << "Computer Choice Error. Please force exit using Ctrl/Cmd+C, and restart the game" << endl;
+            cerr << "Computer Choice Error. Please force exit using Ctrl/Cmd+C, and restart the game" << endl;
+            return 1;
         }
     }
     else if (userChoice == 2) { // User Choice - Scissors
@@ -86,12 +90,15 @@ void showResult(int userChoice, int compChoice) {
             cout << "It's a tie." << endl;
         }
         else {
-            cout << "Computer Choice Error. Please force exit using Ctrl/Cmd+C, and restart the game" << endl;
+            cerr << "Computer Choice Error. Please force exit using Ctrl/Cmd+C, and restart the game" << endl;
+            return 1;
         }
     }
     else {
-        cout << "User Choice Error. Please force exit using Ctrl/Cmd+C, and restart the game" << endl;
+        cerr << "User Choice Error. Please force exit using Ctrl/Cmd+C, and restart the game" << endl;
+        return 1;
     }
+    return 0;
 
 }
 
@@ -101,45 +108,58 @@ void beforeExit() {
     cout << "Your Score (" << playerName << ") - " << USER_SCORE << endl;
     cout << "Computer's Score - " << COMP_SCORE << endl;
     cout << "Games Tied - " << GAME_CT-(USER_SCORE+COMP_SCORE) << endl;
+    cout << endl << "===============BYE!===============" << endl << endl;
 }
 
 int main (int argc, char** argv) {
-    srand(time(0));
-
-    cout << "Ready to play Rock-Paper-Scissors?!" << endl << endl;
-    cout << "Please enter your name below : " << endl;
-    cin >> playerName;
-
-    cout << "Hello, "<<playerName << "! Let's begin the game session" << endl << endl;
-
-    bool exit = false;
-    while(!exit) {
-        cout << "GAME #"<< GAME_CT+1 << endl;
-
-        int userChoice, compChoice;
-
-        userChoice = getUserChoice();
-        compChoice = getCompChoice();
-        showResult (userChoice, compChoice);
+    try {
+        srand(time(0)); //Seeding the pseudo random generator function with the initial seed value of current time
+        cout << endl << "===============WELCOME!===============" << endl << endl;
+        cout << "Ready to play Rock-Paper-Scissors?!" << endl << endl;
+        cout << "Please enter your name below : ";
+        cin >> playerName;
         cout << endl;
-        GAME_CT++;
-        cout << playerName << "(" << USER_SCORE << ") - Computer(" << COMP_SCORE << ")" << endl << endl;
-        string userInput;
-        cout << "Do you want to continue? (y/n) : ";
-        cin >> userInput;
-        while (userInput.length()!=1 || (tolower(userInput[0]) !='y' && tolower(userInput[0]) != 'n')) {
-            cout << "Did not receive a valid input. Do you want to continue? (y/n) : " << endl;
-            cin >> userInput;
-        }
-        if (tolower(userInput[0]) == 'y') {
-            exit = false;
-        }
-        else if (tolower(userInput[0]) == 'n') {
-            exit = true;
-        }
-        cout << endl << endl;
-    }
 
+        cout << "Hello, "<<playerName << "! Let's begin the game session" << endl << endl;
+
+        bool exit = false;
+        while(!exit) {
+            cout << "ROUND #"<< GAME_CT+1 << endl;
+
+            int userChoice, compChoice;
+
+            userChoice = getUserChoice();
+            compChoice = getCompChoice();
+            int ret_code = showResult (userChoice, compChoice);
+            cout << endl;
+            if(ret_code) {
+                cout << "Unexpected error caught in this round. Force-quitting the game" << endl;
+                break;
+            }
+
+            GAME_CT++;
+            cout << "----SCORE----" << endl;
+            cout << playerName << "(" << USER_SCORE << ") - Computer(" << COMP_SCORE << ")" << endl << endl;
+            string userInput;
+            cout << "Do you want to play another round? (y/n) : ";
+            cin >> userInput;
+            while (userInput.length()!=1 || (tolower(userInput[0]) !='y' && tolower(userInput[0]) != 'n')) {
+                cout << "Did not receive a valid input. Do you want to continue? (y/n) : " << endl;
+                cin >> userInput;
+            }
+            cout << endl;
+            if (tolower(userInput[0]) == 'y') {
+                exit = false;
+            }
+            else if (tolower(userInput[0]) == 'n') {
+                exit = true;
+            }
+        }
+    }
+    catch (int x) {
+        cout << "Unexpected error caught in this round. Force-quitting the game" << endl;
+    }
+    cout << endl << endl;
     beforeExit();
     return 0;
 }
